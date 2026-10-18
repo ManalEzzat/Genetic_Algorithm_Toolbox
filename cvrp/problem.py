@@ -1,42 +1,6 @@
-import random
+from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import List, Union
-from ga.chromosome import Chromosome
-
-class PermutationChromosome:
-    """A permutation chromosome compatible with the structure of Chromosome."""
-    def __init__(self, genes, min_value=1, max_value=16):
-        self.genes = list(genes)
-        self.min_value = min_value
-        self.max_value = max_value
-        self.fitness = None
-        if not self.validate():
-            raise ValueError("Invalid permutation chromosome.")
-    def get_genes(self):
-        return self.genes.copy()
-    def copy(self):
-        new_chromosome = self.__class__.__new__(self.__class__)
-        new_chromosome.genes = self.genes.copy()
-        new_chromosome.min_value = self.min_value
-        new_chromosome.max_value = self.max_value
-        new_chromosome.fitness = self.fitness
-        return new_chromosome
-    @classmethod
-    def generate_random(cls, min_value=1, max_value=16):
-        genes = list(range(min_value, max_value + 1))
-        random.shuffle(genes)
-        return cls(genes, min_value, max_value)
-    def validate(self):
-        expected_set = set(range(self.min_value, self.max_value + 1))
-        return (
-            len(self.genes) == len(expected_set)
-            and set(self.genes) == expected_set
-            and all(isinstance(g, int) for g in self.genes)
-        )
-    def __len__(self):
-        return len(self.genes)
-    def __repr__(self):
-        return f"PermutationChromosome({self.genes}, fitness={self.fitness})"
 
 @dataclass
 class CVRPDataModel:
@@ -82,9 +46,7 @@ class DecodedCVRPSolution:
     total_overload: int = 0
     is_feasible: bool = True
 
-def decode_cvrp_chromosome(
-    chromosome: Union[List[int], object], data: CVRPDataModel
-) -> DecodedCVRPSolution:
+def decode_cvrp_chromosome(chromosome: Union[List[int], object], data: CVRPDataModel) -> DecodedCVRPSolution:
     """
     Decodes the sequence into paths for 4 vehicles.
     Supports receiving a list of standard numbers or a chromosome object that contains a 'genes' property.
@@ -97,10 +59,7 @@ def decode_cvrp_chromosome(
     curr_v = 0
     for customer in genes:
         demand = data.demands[customer]
-        if (
-            curr_v < data.num_vehicles - 1
-            and routes[curr_v].load + demand > data.vehicle_capacities[curr_v]
-        ):
+        if (curr_v < data.num_vehicles - 1 and routes[curr_v].load + demand > data.vehicle_capacities[curr_v]):
             curr_v += 1
         routes[curr_v].nodes.append(customer)
         routes[curr_v].load += demand
@@ -124,13 +83,7 @@ def decode_cvrp_chromosome(
         if r.load > r.capacity:
             is_feasible = False
             total_overload += r.load - r.capacity
-    return DecodedCVRPSolution(
-        routes=routes,
-        total_distance=total_distance,
-        total_load=total_load,
-        total_overload=total_overload,
-        is_feasible=is_feasible,
-    )
+    return DecodedCVRPSolution(routes=routes, total_distance=total_distance, total_load=total_load, total_overload=total_overload, is_feasible=is_feasible)
 
 
 def print_ortools_solution(sol: DecodedCVRPSolution, data: CVRPDataModel) -> None:
