@@ -4,7 +4,7 @@ from typing import List, Union
 from ga.chromosome import Chromosome
 
 class PermutationChromosome:
-    """A permutation chromosome compatible with the structure of the first code."""
+    """A permutation chromosome compatible with the structure of Chromosome."""
     def __init__(self, genes, min_value=1, max_value=16):
         self.genes = list(genes)
         self.min_value = min_value
