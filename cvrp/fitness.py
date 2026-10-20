@@ -20,7 +20,8 @@ def evaluate_cvrp_fitness(chromosome: Union[List[int], object], data: CVRPDataMo
     - Adds a fixed penalty for each unit of excess load.
     - If the entity is a chromosome, the result is stored directly in `chromosome.fitness`.
     """
-    sol = decode_cvrp_chromosome(chromosome, data)
+    genes = chromosome.genes if hasattr(chromosome, "genes") else chromosome
+    sol = decode_cvrp_chromosome(genes, data)
     
     # Calculating the distance, with the addition of a penalty for exceeding the load limit (Static Penalty)
     total_cost = float(sol.total_distance + (sol.total_overload * penalty_multiplier))
@@ -28,5 +29,5 @@ def evaluate_cvrp_fitness(chromosome: Union[List[int], object], data: CVRPDataMo
     if hasattr(chromosome, "fitness"):
         chromosome.fitness = score
     if hasattr(chromosome, "cost"):
-        chromosome.fitness = total_cost
+        chromosome.cost = total_cost
     return score
