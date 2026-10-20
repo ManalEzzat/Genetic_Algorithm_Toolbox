@@ -8,6 +8,7 @@ class Chromosome:
     def __init__(self, genes):
         self.genes = list(genes)
         self.fitness = None
+        self.cost = None
 
     def get_genes(self):
         return self.genes.copy()
@@ -17,6 +18,7 @@ class Chromosome:
         new_chromosome = self.__class__.__new__(self.__class__)
         new_chromosome.genes = self.genes.copy()
         new_chromosome.fitness = self.fitness
+        new_chromosome.cost = self.cost
         return new_chromosome
 
     def validate(self):
