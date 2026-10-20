@@ -22,9 +22,12 @@ def roulette_wheel_selection(population, num_parents=2):
         for individual in population:
             current += individual.fitness
             if current >= pick:
-                selected.append(individual.copy())
+                chosen = individual
                 break
-
+        if chosen is None:
+            chosen = population[-1]
+        selected.append(chosen.copy())
+        
     return selected
 
 
